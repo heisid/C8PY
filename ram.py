@@ -26,8 +26,13 @@ class RAM:
 
     @address_exception
     def __setitem__(self, address, value):
-        # Limit only 1 byte per address slot
+        # Limit only 8-bit per address slot
         self.data[address] = 0xff & value
+
+    def bulk_write(self, start_addr, data):
+        # Write many bytes at once in contiguous memory space
+        for idx, data_byte in enumerate(data):
+            self.__setitem__(start_addr + idx, data_byte)
 
     def __len__(self):
         return len(self.data)
