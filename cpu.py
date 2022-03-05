@@ -54,3 +54,9 @@ class CPU:
 
         start_font_addr = 0x050
         ram.bulk_write(start_font_addr, FONT)
+
+
+    def fetch(self, ram):
+        opcode = (ram[self.pc] << 8) | ram[self.pc + 1]
+        self.pc += 2
+        return opcode
