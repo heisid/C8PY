@@ -10,18 +10,21 @@ import random
 
 
 class CPU:
-    def __init__(self, ram=None, screen=None):
+    def __init__(self, ram=None, screen=None, keyboard=None):
         '''
         CPU initialization of devices instance that will be used
         program counter, index register, stack memory,
         timers, and general purpose registers
         '''
 
-        ''' Connect to RAM instance '''
+        ''' Connect to RAM '''
         self.ram = ram
 
-        ''' Connect to screen instance '''
+        ''' Connect to screen '''
         self.screen = screen
+
+        ''' Connect to keyboard '''
+        self.keyboard = keyboard
 
         '''
         The first CHIP-8 interpreter (on the COSMAC VIP computer)
