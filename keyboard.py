@@ -24,26 +24,37 @@ class Keyboard:
         z x c v
         '''
         self.KEYBOARD_MAP = {
-                'K_1': 0x1,
-                'K_2': 0x2,
-                'K_3': 0x3,
-                'K_4': 0x4,
-                'K_q': 0xc,
-                'K_w': 0x5,
-                'K_e': 0x6,
-                'K_r': 0xd,
-                'K_a': 0x7,
-                'K_s': 0x8,
-                'K_d': 0x9,
-                'K_f': 0xe,
-                'K_z': 0xa,
-                'K_x': 0x0,
-                'K_c': 0xc,
-                'K_v': 0xf
+                pygame.K_1: 0x1,
+                pygame.K_2: 0x2,
+                pygame.K_3: 0x3,
+                pygame.K_4: 0x4,
+                pygame.K_q: 0xc,
+                pygame.K_w: 0x5,
+                pygame.K_e: 0x6,
+                pygame.K_r: 0xd,
+                pygame.K_a: 0x7,
+                pygame.K_s: 0x8,
+                pygame.K_d: 0x9,
+                pygame.K_f: 0xe,
+                pygame.K_z: 0xa,
+                pygame.K_x: 0x0,
+                pygame.K_c: 0xc,
+                pygame.K_v: 0xf
                 }
 
+        ''' Current keyboard status (event_type, key) '''
+        self.kb_status = (None, None)
+
+
     def set_keymap(self, keymap):
-        '''
-        For custom keymap
-        '''
+        ''' For custom keymap '''
         pass
+
+
+    def set_event(self, event):
+        self.kb_status(event.type, event.key)
+
+    
+    def get_key_value(self):
+        ''' Return None when keyboard event has no value in dict '''
+        return KEYBOARD_MAP.get(self.kb_status[1])
