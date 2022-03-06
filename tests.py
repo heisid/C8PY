@@ -57,7 +57,7 @@ class TestCPU(unittest.TestCase):
 
     def test_cpu_load_font(self):
         ram = RAM()
-        cpu = CPU()
+        cpu = CPU(ram=ram)
         FONT = [
             0xF0, 0x90, 0x90, 0x90, 0xF0,  # 0
             0x20, 0x60, 0x20, 0x20, 0x70,  # 1
@@ -76,14 +76,14 @@ class TestCPU(unittest.TestCase):
             0xF0, 0x80, 0xF0, 0x80, 0xF0,  # E
             0xF0, 0x80, 0xF0, 0x80, 0x80,  # F
         ]
-        cpu.load_font(ram)
+        cpu.load_font()
         self.assertEqual(ram.data[0x050:0x050+len(FONT)], FONT, "Font must be loaded to RAM")
 
     def test_cpu_fetch(self):
         ram = RAM()
-        cpu = CPU()
+        cpu = CPU(ram=ram)
         ram.bulk_write(0x200, [0x61, 0xff])
-        opcode = cpu.fetch(ram)
+        opcode = cpu.fetch()
         self.assertEqual(opcode, 0x61ff, "CPU must fetch opcode 0x61ff from memory address 0x200")
         self.assertEqual(cpu.pc, 0x200 + 2, "CPU PC register must increase by 2")
 

@@ -1,10 +1,17 @@
 class CPU:
-    def __init__(self):
+    def __init__(self, ram=None, screen=None):
         '''
-        CPU initialization of
+        CPU initialization of devices instance that will be used
         program counter, index register, stack memory,
         timers, and general purpose registers
         '''
+
+        ''' Connect to RAM instance '''
+        self.ram = ram
+
+        ''' Connect to screen instance '''
+        self.screen = screen
+
         '''
         The first CHIP-8 interpreter (on the COSMAC VIP computer)
         was also located in RAM, from address 000 to 1FF.
@@ -27,7 +34,7 @@ class CPU:
         self.v = [0x0] * 16
 
 
-    def load_font(self, ram):
+    def load_font(self):
         '''
         The CHIP-8 emulator should have a built-in font
         Each font character should be 4 pixels wide by 5 pixels tall.
@@ -53,15 +60,15 @@ class CPU:
         ]
 
         start_font_addr = 0x050
-        ram.bulk_write(start_font_addr, FONT)
+        self.ram.bulk_write(start_font_addr, FONT)
 
 
-    def fetch(self, ram):
+    def fetch(self):
         '''
         Read the instruction that PC is currently pointing at from memory. 
         An instruction is two bytes.
         '''
-        opcode = (ram[self.pc] << 8) | ram[self.pc + 1]
+        opcode = (self.ram[self.pc] << 8) | self.ram[self.pc + 1]
         self.pc += 2
         return opcode
 
@@ -106,9 +113,9 @@ class CPU:
     def op_0(self, arg):
         if arg == 0x0e0:
             ''' 0x00e0: CLS: Clear screen '''
-            pass # IMPLEMENT LATER
+            self.screen.clear()
 
-        elif arg = 0x0ee:
+        elif arg == 0x0ee:
             ''' 0x00ee: RET: Return from subroutine '''
             self.pc = self.stack.pop()
 
@@ -116,3 +123,70 @@ class CPU:
             return False
 
         return True
+
+    
+    def op_1(self, arg):
+        ''' 0x1nnn: JP nnn: Jump to address 0xnnn '''
+        self.pc = arg
+
+        return True
+
+
+    def op_6(self, arg):
+        ''' 0x6xnn: LD Vx, nn: Set register Vx to 0xnnn '''
+        idx = (0xf00 & arg) >> 8
+        val = 0x0ff & arg
+
+        self.v[idx] = val
+
+        return True
+
+    
+    def op_7(self, arg):
+        ''' 0x7xnn: ADD Vx, nn: Add 0xnn to register Vx '''
+        idx = (0xf00 & arg) >> 8
+        val = 0x0ff & arg
+
+        self.v[idx] += val
+
+        return True
+
+
+    def op_a(self, arg):
+        ''' 0xannn: LD I, nnn: Set register I to 0xnnn '''
+        self.i = arg
+
+        return True
+
+
+    def op_d(self, arg):
+        ''' 
+        0xdxyn: DRW Vx, Vy, n
+        Take (x, y) coordinate from Vx, Vy
+        and draw n byte sprite data, starting at address stored at I register
+        I is not incremented.
+        Coordinate will wrap if it's outside the screen,
+        but actual n pixel drawing does not (but is clipped)
+        Then set register Vf to 0
+        if there's a pixel that is already "on", toggle it to "off"
+        and set register Vf to 1. Ribet amat kampret.
+        '''
+        x = self.v[(0xf00 & arg) >> 8]
+        y = self.v[(0x0f0 & arg) >> 4]
+        n = 0x00f & arg
+
+        x, y = x % 63, y % 31 # Wrapping
+
+        self.v[0xf] = 0
+        
+        screen_state = self.screen.get_state()
+
+        for row in range(0, n):
+            sprite_data_byte = self.ram[self.i + row]
+
+            for col in range(0, sprite_data_byte):
+                self.v[0xf] = screen_state[row + y][col + x] and sprite_data_byte[col]
+                if sprite_data_byte[column]:
+                    ''' there is clipping here, but I will handle it to screen '''
+                    self.screen.toggle_pixel(row + y, column + x)
+
