@@ -22,10 +22,18 @@ def main():
 
     clock = pygame.time.Clock()
 
+    running = True
     while True:
+        ''' Take global event '''
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif (event.type == pygame.KEYDOWN) or (event.type == pygame.KEYUP):
+                keyboard.set_event(event)
+
         '''
         CPU runs instruction, updates RAM state
-        takes keyboard event, and sends command to screen
+        check keyboard input, and sends command to screen
         '''
         cpu.run()
 
