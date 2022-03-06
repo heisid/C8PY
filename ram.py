@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+
+''' Class representing main memory of CHIP-8 '''
+
+__author__  = "Rosyid Haryadi"
+__license__ = "GPLv3"
+
+
 import sys
 
 

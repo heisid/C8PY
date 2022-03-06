@@ -1,3 +1,13 @@
+#!/usr/bin/env python
+
+''' Class representing CHIP-8 hexadecimal keyboard '''
+
+__author__  = "Rosyid Haryadi"
+__license__ = "GPLv3"
+
+
+import pygame
+
 class Keyboard:
     def __init__(self):
         '''

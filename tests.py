@@ -1,8 +1,15 @@
 #!/usr/bin/env python
 
+''' Unit test for CPU and memory of CHIP-8 emulator '''
+
+__author__  = "Rosyid Haryadi"
+__license__ = "GPLv3"
+
+
 import unittest
 from ram import RAM
 from cpu import CPU
+
 
 class TestRAM(unittest.TestCase):
     def test_ram_initialization(self):

@@ -1,3 +1,14 @@
+#!/usr/bin/env python
+
+''' Class for emulating CHIP-8 CPU '''
+
+__author__  = "Rosyid Haryadi"
+__license__ = "GPLv3"
+
+
+import random
+
+
 class CPU:
     def __init__(self, ram=None, screen=None):
         '''
@@ -193,4 +204,6 @@ class CPU:
                 if sprite_bit:
                     ''' there is clipping here, but I will handle it to screen '''
                     self.screen.toggle_pixel(row + y, column + x)
+
+        return True
 
