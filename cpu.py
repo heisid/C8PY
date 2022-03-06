@@ -182,11 +182,15 @@ class CPU:
         screen_state = self.screen.get_state()
 
         for row in range(0, n):
-            sprite_data_byte = self.ram[self.i + row]
+            sprite_byte = self.ram[self.i + row]
 
-            for col in range(0, sprite_data_byte):
-                self.v[0xf] = screen_state[row + y][col + x] and sprite_data_byte[col]
-                if sprite_data_byte[column]:
+            for col in range(0, 0x8):
+                ''' Extract col-th bit from sprite_byte '''
+                sprite_bit = (sprite_byte >> 0x7 - col) & 0x1
+
+                self.v[0xf] = screen_state[row + y][col + x] and sprite_bit
+
+                if sprite_bit:
                     ''' there is clipping here, but I will handle it to screen '''
                     self.screen.toggle_pixel(row + y, column + x)
 
