@@ -63,3 +63,11 @@ class RAM:
         for address, value in enumerate(self.data):
             printed_str += f"0x{address:03x}: 0x{value:02x}\n"
         return printed_str
+
+
+if __name__ == '__main__':
+    import unittest
+    from tests import TestRAM
+
+    ram_test_runner = unittest.TestLoader().loadTestsFromTestCase(TestRAM)
+    unittest.TextTestRunner(verbosity=2).run(ram_test_runner)

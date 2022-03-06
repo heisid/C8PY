@@ -7,6 +7,9 @@ __license__ = "GPLv3"
 
 
 import unittest
+from unittest.mock import Mock
+import sys
+
 from ram import RAM
 from cpu import CPU
 
@@ -93,6 +96,13 @@ class TestCPU(unittest.TestCase):
         opcode = cpu.fetch()
         self.assertEqual(opcode, 0x61ff, "CPU must fetch opcode 0x61ff from memory address 0x200")
         self.assertEqual(cpu.pc, 0x200 + 2, "CPU PC register must increase by 2")
+
+    def test_cpu_op_0x00e0(self):
+        screen = Mock()
+        cpu = CPU(screen=screen)
+        exe_status = cpu.op_0(0x0e0)
+        self.assertTrue(exe_status, "0x00e0 must execute successfully")
+        screen.clear.assert_called_once()
 
 
 

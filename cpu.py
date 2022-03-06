@@ -207,3 +207,10 @@ class CPU:
 
         return True
 
+
+if __name__ == '__main__':
+    import unittest
+    from tests import TestCPU
+
+    cpu_test_runner = unittest.TestLoader().loadTestsFromTestCase(TestCPU)
+    unittest.TextTestRunner(verbosity=2).run(cpu_test_runner)
