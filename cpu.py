@@ -44,6 +44,21 @@ class CPU:
         ''' 16 of 8-bit General purpose registers '''
         self.v = [0x0] * 16
 
+        self.font_loaded = False
+
+
+    def run(self):
+        ''' 
+        Run CPU at one tick clock. Loop is managed by main file (c8.py) 
+        font_load() only run once at the beginning
+        '''
+        if not self.font_loaded:
+            self.font_load()
+            self.font_loaded = True
+
+        self.fetch()
+        self.execute()
+
 
     def load_font(self):
         '''
