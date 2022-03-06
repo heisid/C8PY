@@ -217,11 +217,11 @@ class CPU:
                 ''' Extract col-th bit from sprite_byte '''
                 sprite_bit = (sprite_byte >> 0x7 - col) & 0x1
 
-                self.v[0xf] = screen_state[row + y][col + x] and sprite_bit
+                self.v[0xf] = screen_state[col + x][row + y] and sprite_bit
 
                 if sprite_bit:
                     ''' there is clipping here, but I will handle it to screen '''
-                    self.screen.toggle_pixel(row + y, column + x)
+                    self.screen.toggle_pixel(column + x, row + y)
 
         return True
 

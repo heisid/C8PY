@@ -23,7 +23,7 @@ def main():
     clock = pygame.time.Clock()
 
     running = True
-    while True:
+    while running:
         ''' Take global event '''
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -36,6 +36,7 @@ def main():
         check keyboard input, and sends command to screen
         '''
         cpu.run()
+        screen.render()
 
         ''' Limit to 60 FPS '''
         clock.tick(60)
