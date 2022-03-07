@@ -59,8 +59,8 @@ class CPU:
             self.font_load()
             self.font_loaded = True
 
-        self.fetch()
-        self.execute()
+        opcode = self.fetch()
+        self.execute(opcode)
 
 
     def load_font(self):
@@ -156,6 +156,14 @@ class CPU:
     
     def op_1(self, arg):
         ''' 0x1nnn: JP nnn: Jump to address 0xnnn '''
+        self.pc = arg
+
+        return True
+
+
+    def op_2(self, arg):
+        ''' 0x2nnn: CALL nnn: Call subroutine at 0xnnn '''
+        self.stack.append(self.pc)
         self.pc = arg
 
         return True
