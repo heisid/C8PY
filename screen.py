@@ -19,8 +19,7 @@ class Screen:
             (32 * self_px_scale) + (2 * self.padding)
             ))
 
-        self.surface.fill((0xff, 0xff, 0xff))
-        self.screen_state = [[False] * 64] * 32
+        self.clear()
 
 
     def draw_pixel(self, x, y, px_value):
@@ -36,6 +35,15 @@ class Screen:
         px_val = self.screen_state[y][x]
         self.draw_pixel(x, y, not px_val)
         self.screen_state[y][x] = not px_val
+
+
+    def get_state(self):
+        return self.screen_state
+
+
+    def clear(self):
+        self.surface.fill((0xff, 0xff, 0xff))
+        self.screen_state = [[False] * 64] * 32
 
 
     def render(self):
