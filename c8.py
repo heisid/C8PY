@@ -41,4 +41,15 @@ def main():
         ''' Limit to 60 FPS '''
         clock.tick(60)
 
-main()
+
+def load_rom(file_name, ram):
+    addr = 0x200
+    with open(file_name, 'rb') as f:
+        byte = f.read(1)
+        while byte:
+            ram[addr] = byte
+            addr += 0x1
+
+
+if __name__ == '__main__':
+    main()
