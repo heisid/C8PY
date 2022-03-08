@@ -169,6 +169,42 @@ class CPU:
         return True
 
 
+    def op_3(self, arg):
+        ''' 0x3xnn: SE Vx, nn: Skip if Vx = nn '''
+        idx = (0xf00 & arg) >> 8
+        val = 0xff & arg
+
+        if self.v[idx] == val:
+            self.pc += 2
+
+        return True
+
+
+    def op_4(self, arg):
+        ''' 0x4xnn: SNE Vx, nn: Skip if Vx != nn '''
+        idx = (0xf00 & arg) >> 8
+        val = 0xff & arg
+
+        if self.v[idx] != val:
+            self.pc += 2
+
+        return True
+
+
+    def op_5(self, arg):
+        if (0x00f & arg) != 0:
+            return False
+
+        ''' 0x5xy0: SE Vx, Vy: Skip if Vx = Vy '''
+        x_idx = (0xf00 & arg) >> 8
+        y_idx = (0x0f0 & arg) >> 4
+
+        if self.v[x_idx] == self.v[y_idx]:
+            self.pc += 2
+
+        return True
+
+
     def op_6(self, arg):
         ''' 0x6xnn: LD Vx, nn: Set register Vx to 0xnnn '''
         idx = (0xf00 & arg) >> 8
@@ -185,6 +221,20 @@ class CPU:
         val = 0x0ff & arg
 
         self.v[idx] += val
+
+        return True
+
+
+    def op_9(self, arg):
+        if (0x00f & arg) != 0:
+            return False
+
+        ''' 0x9xy0: SNE Vx, Vy: Skip if Vx != Vy '''
+        x_idx = (0xf00 & arg) >> 8
+        y_idx = (0x0f0 & arg) >> 4
+
+        if self.v[x_idx] != self.v[y_idx]:
+            self.pc += 2
 
         return True
 
