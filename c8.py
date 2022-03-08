@@ -6,7 +6,9 @@ __author__  = "Rosyid Haryadi"
 __license__ = "GPLv3"
 
 
+import sys
 import pygame
+
 from cpu import CPU
 from ram import RAM
 from keyboard import Keyboard
@@ -19,6 +21,9 @@ def main():
     keyboard = Keyboard()
 
     cpu = CPU(ram=ram, screen=screen, keyboard=keyboard)
+
+    rom_file_name = sys.argv[1]
+    load_rom(rom_file_name, ram)
 
     clock = pygame.time.Clock()
 
@@ -43,6 +48,7 @@ def main():
 
 
 def load_rom(file_name, ram):
+    ''' TODO: will change later using pygame_gui '''
     addr = 0x200
     with open(file_name, 'rb') as f:
         byte = f.read(1)
