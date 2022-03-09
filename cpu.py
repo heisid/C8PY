@@ -220,7 +220,7 @@ class CPU:
         idx = (0xf00 & arg) >> 8
         val = 0x0ff & arg
 
-        self.v[idx] += val
+        self.v[idx] = (val + self.v[idx]) & 0xff
 
         return True
 
