@@ -224,6 +224,52 @@ class CPU:
 
         return True
 
+ 
+    def op_8(self, arg):
+        op_subclass = 0x00f & arg
+        idx = (0xf00 & arg) >> 8
+        idy = (0x0f0 & arg) >> 4
+
+        if op_subclass == 0x0:
+            ''' 0x8xy0: LD Vx, Vy: Vx is set to the value of Vy '''
+            self.v[idx] = self.v[idy]
+
+        elif op_subclass == 0x1:
+            ''' 0x8xy1: OR Vx, Vy: Vx is set to bitwise OR of Vx and Vy '''
+            self.v[idx] |= v[idy]
+
+        elif op_subclass == 0x2:
+            ''' 0x8xy2: AND Vx, Vy: Vx is set to bitwise AND of Vx and Vy '''
+            self.v[idx] &= v[idy]
+
+        elif op_subclass == 0x3:
+            ''' 0x8xy2: XOR Vx, Vy: Vx is set to bitwise XOR of Vx and Vy '''
+            self.v[idx] ^= v[idy]
+
+        elif op_subclass == 0x4:
+            '''
+            0x8xy2: ADD Vx, Vy: Vx is set to the value of Vx + Vy
+            if the result overflows, Vf (carry flag) is set to 1,
+            otherwise Vf is set to 0
+            '''
+            res = self.v[idx] + self.v[idy]
+            self.v[0xf] = res > 0xff
+            self.v[idx] = 0xff & res # Clipping if overflow happens
+
+        elif op_subclass == 0x5:
+            ''' 0x8xy2: SUB Vx, Vy '''
+        elif op_subclass == 0x6:
+            ''' 0x8xy2: SHR Vx, Vy '''
+        elif op_subclass == 0x7:
+            ''' 0x8xy2: SUBN Vx, Vy '''
+        elif op_subclass == 0xe:
+            ''' 0x8xy2: SHL Vx, Vy '''
+
+        else:
+            return False
+
+        return True
+
 
     def op_9(self, arg):
         if (0x00f & arg) != 0:
