@@ -6,7 +6,7 @@ __author__  = "Rosyid Haryadi"
 __license__ = "GPLv3"
 
 
-import random
+from random import randint
 
 
 class CPU:
@@ -301,10 +301,10 @@ class CPU:
             return False
 
         ''' 0x9xy0: SNE Vx, Vy: Skip if Vx != Vy '''
-        x_idx = (0xf00 & arg) >> 8
-        y_idx = (0x0f0 & arg) >> 4
+        idx = (0xf00 & arg) >> 8
+        idy = (0x0f0 & arg) >> 4
 
-        if self.v[x_idx] != self.v[y_idx]:
+        if self.v[idx] != self.v[idy]:
             self.pc += 2
 
         return True
@@ -313,6 +313,24 @@ class CPU:
     def op_a(self, arg):
         ''' 0xannn: LD I, nnn: Set register I to 0xnnn '''
         self.i = arg
+
+        return True
+
+
+    def op_b(self, arg):
+        ''' 0xbnnn: JP V0, nnn: Jump to location nnn + V0 '''
+        self.pc = arg + self.v[0]
+
+        return True
+
+
+    def op_b(self, arg):
+        ''' 
+        0xcxkk: RND Vx, kk
+        Generate random number and binary AND it with nn and put the result to Vx
+        '''
+        kk = 0x0ff & arg
+        self.v[idx] = randint(0x00, 0xff) & kk
 
         return True
 
@@ -351,6 +369,25 @@ class CPU:
                 if sprite_bit:
                     ''' there is clipping here, but I will handle it to screen '''
                     self.screen.toggle_pixel(column + x, row + y)
+
+        return True
+
+
+    def op_e(self, arg):
+        idx = 0xf00 & arg
+        op_subclass = 0x0ff & arg
+        if op_subclass == 0x9e:
+            ''' 0xex9e: SKP Vx: Skip if key in value Vx is pressed '''
+            if self.keyboard.is_down(0xf & self.v[idx]):
+                self.pc += 2
+
+        elif op_subclass == 0xa1:
+            ''' 0xexa1: SKPN Vx: Skip if key in value Vx is not pressed '''
+            if not self.keyboard.is_down(0xf & self.v[idx]):
+                self.pc += 2
+
+        else:
+            return False
 
         return True
 
