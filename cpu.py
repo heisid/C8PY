@@ -243,12 +243,12 @@ class CPU:
             self.v[idx] &= v[idy]
 
         elif op_subclass == 0x3:
-            ''' 0x8xy2: XOR Vx, Vy: Vx is set to bitwise XOR of Vx and Vy '''
+            ''' 0x8xy3: XOR Vx, Vy: Vx is set to bitwise XOR of Vx and Vy '''
             self.v[idx] ^= v[idy]
 
         elif op_subclass == 0x4:
             '''
-            0x8xy2: ADD Vx, Vy: Vx is set to the value of Vx + Vy
+            0x8xy4: ADD Vx, Vy: Vx is set to the value of Vx + Vy
             if the result overflows, Vf (carry flag) is set to 1,
             otherwise Vf is set to 0
             '''
@@ -257,13 +257,38 @@ class CPU:
             self.v[idx] = 0xff & res # Clipping if overflow happens
 
         elif op_subclass == 0x5:
-            ''' 0x8xy2: SUB Vx, Vy '''
+            ''' 
+            0x8xy5: SUB Vx, Vy: Vx is set to Vx - Vy.
+            If Vx is larger than Vy, Vf is set to 1, otherwise (underflow) Vf is 0
+            '''
+            self.v[0xf] = self.v[idx] > self.v[idy]
+            self.v[idx] = (self.v[idx] - self.v[idy]) & 0xff # Wrapping if underflow happens
+
         elif op_subclass == 0x6:
-            ''' 0x8xy2: SHR Vx, Vy '''
+            ''' 
+            0x8xy6: SHR Vx {, Vy}
+            Vx is set to Vy (optional), then if least significant bit of Vx
+            is 1 then Vf is set to 1, otherwise 0. Then Vx is shifted right 1 bit
+            '''
+            self.v[0xf] = 0x01 & self.v[idx]
+            self.v[idx] >>= 1
+
         elif op_subclass == 0x7:
-            ''' 0x8xy2: SUBN Vx, Vy '''
+            ''' 
+            0x8xy7: SUBN Vx, Vy: Vx is set to Vy - Vx.
+            If Vy is larger than Vx, Vf is set to 1, otherwise (underflow) Vf is 0
+            '''
+            self.v[0xf] = self.v[idy] > self.v[idx]
+            self.v[idx] = (self.v[idy] - self.v[idx]) & 0xff
+
         elif op_subclass == 0xe:
-            ''' 0x8xy2: SHL Vx, Vy '''
+            '''
+            0x8xy2: SHL Vx, Vy
+            Vx is set to Vy (optional), then if most significant bit of Vx
+            is 1 then Vf is set to 1, otherwise 0. Then Vx is shifted left 1 bit
+            '''
+            self.v[0xf] = 0x80 & self.v[idx]
+            self.v[idx] <<= 1
 
         else:
             return False
