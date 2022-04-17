@@ -1,17 +1,15 @@
 #!/usr/bin/env python
 
-''' Unit test for CPU and memory of CHIP-8 emulator '''
+""" Unit test for CPU and memory of CHIP-8 emulator """
 
-__author__  = "Rosyid Haryadi"
+__author__ = "Rosyid Haryadi"
 __license__ = "GPLv3"
-
 
 import unittest
 from unittest.mock import Mock
-import sys
 
-from ram import RAM
 from cpu import CPU
+from ram import RAM
 
 
 class TestRAM(unittest.TestCase):
@@ -54,7 +52,8 @@ class TestRAM(unittest.TestCase):
     def test_ram_bulk_write(self):
         ram = RAM()
         ram.bulk_write(0x000, [0x01, 0x01])
-        self.assertEqual(ram.data[0x000:0x003], [0x01, 0x01, 0x00], "Two bytes data must be written in 0x000 to 0x001 and nowhere else")
+        self.assertEqual(ram.data[0x000:0x003], [0x01, 0x01, 0x00],
+                         "Two bytes data must be written in 0x000 to 0x001 and nowhere else")
 
 
 class TestCPU(unittest.TestCase):
@@ -87,7 +86,7 @@ class TestCPU(unittest.TestCase):
             0xF0, 0x80, 0xF0, 0x80, 0x80,  # F
         ]
         cpu.load_font()
-        self.assertEqual(ram.data[0x050:0x050+len(FONT)], FONT, "Font must be loaded to RAM")
+        self.assertEqual(ram.data[0x050:0x050 + len(FONT)], FONT, "Font must be loaded to RAM")
 
     def test_cpu_fetch(self):
         ram = RAM()
@@ -106,13 +105,13 @@ class TestCPU(unittest.TestCase):
 
     def test_cpu_op_0x00ee(self):
         cpu = CPU()
-        cpu.stack = [addr for addr in range(0x200, 0x200+5)]
+        cpu.stack = [addr for addr in range(0x200, 0x200 + 5)]
         stack_top = cpu.stack[-1]
         orig_stack_size = len(cpu.stack)
         exe_status = cpu.op_0(0x0ee)
         self.assertTrue(exe_status, "0x00ee must execute successfully")
         self.assertEqual(cpu.pc, stack_top, f"{stack_top} must be popped from stack to pc")
-        self.assertEqual(len(cpu.stack), orig_stack_size-1, "Stack size must shrink")
+        self.assertEqual(len(cpu.stack), orig_stack_size - 1, "Stack size must shrink")
 
 
 if __name__ == '__main__':

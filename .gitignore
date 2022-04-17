@@ -21,3 +21,6 @@ Sessionx.vim
 
 # nvim persistent undo
 [._]*.un~
+
+# PyCharm
+.idea/
